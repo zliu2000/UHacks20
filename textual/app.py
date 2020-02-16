@@ -20,6 +20,9 @@ from helpers import apology
 # Configure application
 app = Flask(__name__)
 
+# Configure CS50 Library to use SQLite database
+db = SQL("sqlite:///textual.db")
+
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
@@ -44,9 +47,9 @@ Session(app)
 def gen():
     if request.method == "POST":
         # Get raw text as string from request
-        text = request.form.get("input");
-        if not text:
-            return apology("no text given", 400)
+        text = request.form.get("input")
+        if not text or len(str(text)) < 10:
+            return apology("must provide text of at least 10 characters", 400)
         # Build the model.
         text_model = markovify.Text(text)
 
@@ -62,7 +65,13 @@ def gen():
     else:
         return render_template("gen.html")
 
-
+@app.route("/gen", methods=["GET", "POST"])
+def add():
+    if request.method == "POST":
+        db.execute("INSERT INTO text (userid, symbol, shares, price) VALUES(:uid, :symbol, :shares, :price)",
+                uid=userid, symbol=stonk['symbol'], shares=shares, price=price)
+    else:
+        return render_template("gen.html")
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
