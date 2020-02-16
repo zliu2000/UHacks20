@@ -6,19 +6,22 @@
 
 {% block main %}
 
-Welcome, yo! <br>
+Choose two texts to mingle!<br>
 
 <br>
 <form action="/gen" method="post">
         Text Name(s):
+
           <select name = "textname1"
             class="form-control">
+            <option disabled selected value="">Text Name</option>
             {% for name in names %}
               <option value={{name['name']}}>{{name['name']}}</option>
             {% endfor %}
           </select>
           <select name = "textname2"
             class="form-control">
+            <option disabled selected value="">Text Name</option>
             {% for name in names %}
               <option value={{name['name']}}>{{name['name']}}</option>
             {% endfor %}

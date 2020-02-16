@@ -79,9 +79,11 @@ def gen():
         # Print five randomly-generated sentences
         for i in range(6):
             output += str(text_model.make_sentence())
-        ns = db.execute("SELECT name FROM texts")
+        ns = db.execute("SELECT DISTINCT name FROM texts")
+        if textname1 and textname2:
+            textname2 = " and " + textname2
         return render_template("gened.html", out=output,
-            names = ns)
+            names = ns, tname1=textname1, tname2=textname2)
     else:
         """
         inp = pd.read_csv('trump.csv', index_col=False)
@@ -90,7 +92,7 @@ def gen():
             text += row
         db.execute("INSERT INTO texts (name, s_text) VALUES(:name, :text)", name="Trump", text=text)
         """
-        ns = db.execute("SELECT name FROM texts")
+        ns = db.execute("SELECT DISTINCT name FROM texts")
         return render_template("gen.html", names=ns)
 
 @app.route("/add", methods=["GET", "POST"])
