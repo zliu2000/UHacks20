@@ -46,32 +46,67 @@ Session(app)
 @app.route("/gen", methods=["GET", "POST"])
 def gen():
     if request.method == "POST":
-        # Get raw text as string from request
-        text = request.form.get("input")
-        if not text or len(str(text)) < 10:
-            return apology("must provide text of at least 10 characters", 400)
+        #querying based on text name
+        textname1 = request.form.get("textname1")
+        textname2 = request.form.get("textname2")
+        if not textname1 and not textname2:
+            return apology("must insert at least one textname", 400)
+        texts1 = db.execute("SELECT s_text FROM texts WHERE name = :name",
+                name=textname1)
+        texts2 = db.execute("SELECT s_text FROM texts WHERE name = :name",
+                name=textname2)
+        if not texts1 and not texts2:
+            return apology("must provide at least one valid name", 400)
+
+        input1 = ""
+        input2 = ""
+        #iterating over texts in query
+        for text in texts1:
+            input1 += str(text)
+        for text in texts2:
+            input2 += str(text)
+        l1 = len(input1)
+        l2 = len(input2)
+        if l1 < l2:
+            input2 = input2[:l1]
+        else:
+            input1 = input1[:l2]
+        input = input1 + input2
         # Build the model.
-        text_model = markovify.Text(text)
+        text_model = markovify.Text(input)
 
         output = ""
         # Print five randomly-generated sentences
-        for i in range(5):
+        for i in range(6):
             output += str(text_model.make_sentence())
-
-        # Print three randomly-generated sentences of no more than 280 characters
-        for i in range(3):
-            output += str(text_model.make_short_sentence(280))
-        return render_template("gened.html", out=output)
+        ns = db.execute("SELECT name FROM texts")
+        return render_template("gened.html", out=output,
+            names = ns)
     else:
-        return render_template("gen.html")
+        """
+        inp = pd.read_csv('trump.csv', index_col=False)
+        text = ""
+        for row in inp['text']:
+            text += row
+        db.execute("INSERT INTO texts (name, s_text) VALUES(:name, :text)", name="Trump", text=text)
+        """
+        ns = db.execute("SELECT name FROM texts")
+        return render_template("gen.html", names=ns)
 
-@app.route("/gen", methods=["GET", "POST"])
+@app.route("/add", methods=["GET", "POST"])
 def add():
     if request.method == "POST":
-        db.execute("INSERT INTO text (userid, symbol, shares, price) VALUES(:uid, :symbol, :shares, :price)",
-                uid=userid, symbol=stonk['symbol'], shares=shares, price=price)
+        textname = request.form.get("textname")
+        input = request.form.get("input")
+        if (not textname) or (not input):
+            return apology("must have textname and input", 400)
+        db.execute("INSERT INTO texts (name, s_text) VALUES(:name, :text)",
+                name=textname, text=input)
+        return redirect("/")
     else:
-        return render_template("gen.html")
+        return render_template("add.html")
+
+
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):

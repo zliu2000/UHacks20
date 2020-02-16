@@ -8,10 +8,13 @@
 
 Welcome, yo! <br>
 <br>
-<form action="/gen" method="post">
+<form action="/add" method="post">
         <div class="form-group">
-            <input autocomplete="off" autofocus class="form-control input-lg" name="input" placeholder="Text Here" type="text">
+            <input autocomplete="off" autofocus class="form-control input-lg" name="textname" placeholder="Name of Text" type="text">
         </div>
-        <button class="btn btn-primary" type="submit">Generate Discussion Post</button>
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control input-lg" name="input" placeholder="Input Text Here" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Add Text</button>
 </form>
 {% endblock %}

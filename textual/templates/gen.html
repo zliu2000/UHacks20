@@ -7,11 +7,23 @@
 {% block main %}
 
 Welcome, yo! <br>
+
 <br>
 <form action="/gen" method="post">
-        <div class="form-group">
-            <input autocomplete="off" autofocus class="form-control input-lg" name="input" placeholder="Text Here" type="text">
-        </div>
-        <button class="btn btn-primary" type="submit">Generate Discussion Post</button>
+        Text Name(s):
+          <select name = "textname1"
+            class="form-control">
+            {% for name in names %}
+              <option value={{name['name']}}>{{name['name']}}</option>
+            {% endfor %}
+          </select>
+          <select name = "textname2"
+            class="form-control">
+            {% for name in names %}
+              <option value={{name['name']}}>{{name['name']}}</option>
+            {% endfor %}
+          </select>
+<br><br>
+        <button class="btn btn-primary" type="submit">Generate Textual Tension</button>
 </form>
 {% endblock %}
