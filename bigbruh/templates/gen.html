@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Summary
+{% endblock %}
+
+{% block main %}
+
+Welcome, yo! <br>
+<br>
+<form action="/gen" method="post">
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control input-lg" name="reading" placeholder="Reading Here" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Generate Discussion Post</button>
+    </form>
+{% endblock %}
