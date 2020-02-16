@@ -6,12 +6,15 @@
 
 {% block main %}
 
-Welcome, yo! <br>
+Generated, yo! <br>
 <br>
+
+{{out}}
+
 <form action="/gen" method="post">
         <div class="form-group">
             <input autocomplete="off" autofocus class="form-control input-lg" name="input" placeholder="Text Here" type="text">
         </div>
         <button class="btn btn-primary" type="submit">Generate Discussion Post</button>
-</form>
+    </form>
 {% endblock %}

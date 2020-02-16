@@ -37,18 +37,31 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-inp = pd.read_csv('../input/abcnews-date-text.csv')
-inp.head(3)
-text_model = markovify.NewlineText(inp.headline_text, state_size = 2)
-# Print ten randomly-generated sentences using the built model
-for i in range(10):
-    print(text_model.make_sentence())
 
-    
 
 @app.route("/")
-def index():
-    return render_template("gen.html")
+@app.route("/gen", methods=["GET", "POST"])
+def gen():
+    if request.method == "POST":
+        # Get raw text as string from request
+        text = request.form.get("input");
+        if not text:
+            return apology("no text given", 400)
+        # Build the model.
+        text_model = markovify.Text(text)
+
+        output = ""
+        # Print five randomly-generated sentences
+        for i in range(5):
+            output += str(text_model.make_sentence())
+
+        # Print three randomly-generated sentences of no more than 280 characters
+        for i in range(3):
+            output += str(text_model.make_short_sentence(280))
+        return render_template("gened.html", out=output)
+    else:
+        return render_template("gen.html")
+
 
 def errorhandler(e):
     """Handle error"""
